@@ -4,7 +4,6 @@
  */
 
 import dataStructure.GraphT;
-import dataStructure.NodeT;
 import domain.model.Person;
 import domain.model.Sex;
 
@@ -13,7 +12,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,7 +48,7 @@ public class Main {
         FileReader fileReaderQuestions = new FileReader("src/data/inputQuestions");
         BufferedReader inQuestions = new BufferedReader(fileReaderQuestions);
 
-        String inLineData = "[{][\\s]*([A-z]+)[\\s]*,[\\s]*([A-z]+)[\\s]*,[\\s]*(M|F|U)[\\s]*,[\\s]*([0-9]{2}[/][0-9]{2}[/][0-9]{4})[\\s]*[}]";
+        String inLineData = "([{][\\s]*([A-z]+)[\\s]*,[\\s]*([A-z]+)[\\s]*,[\\s]*(M|F|U)[\\s]*,[\\s]*([0-9]{2}[/][0-9]{2}[/][0-9]{4})[\\s]*[}])";
         String pos = "([0-9]+)";
         String nivel = "([0-9]+)";
 
@@ -65,10 +63,11 @@ public class Main {
             Matcher m = dataPattern.matcher(dataline);
 
             if(m.find()){
-                String firstName1 = m.group(1);
-                String lastName1 = m.group(2);
-                Sex sex1 = Sex.valueOf(m.group(3).toUpperCase());
-                LocalDate date1 = parseStringDate(m.group(4));
+                showMactherGroups(m);
+                String firstName1 = m.group(2);
+                String lastName1 = m.group(3);
+                Sex sex1 = Sex.valueOf(m.group(4).toUpperCase());
+                LocalDate date1 = parseStringDate(m.group(5));
 
                 Person person = new Person(firstName1, lastName1, sex1, date1);
                 graph.addNode(person);
@@ -110,22 +109,22 @@ public class Main {
                 showMactherGroups(m);
 
                 if(pattern.toString().equals(stringPattern1)){
-                    proccessMatchedPattern1(m);
+                    processMatchedPattern1(m);
                 }
                 else if(pattern.toString().equals(stringPattern2)){
-                    proccessMatchedPattern2(m);
+                    processMatchedPattern2(m);
                 }
                 else if(pattern.toString().equals(stringPattern3)){
-                    proccessMatchedPattern3(m);
+                    processMatchedPattern3(m);
                 }
                 else if(pattern.toString().equals(stringPattern4)){
-                    proccessMatchedPattern4(m);
+                    processMatchedPattern4(m);
                 }
                 else if(pattern.toString().equals(stringPattern5)){
-                    proccessMatchedPattern5(m);
+                    processMatchedPattern5(m);
                 }
                 else if(pattern.toString().equals(stringPattern6)){
-                    proccessMatchedPattern6(m);
+                    processMatchedPattern6(m);
                 }
             }
         }
@@ -136,63 +135,63 @@ public class Main {
         graph.addBidirectionalHedge(person1, person2);
     }
 
-    private static void proccessMatchedPattern1(Matcher m) {
-        String firstName1 = m.group(1);
-        String lastName1 = m.group(2);
-        Sex sex1 = Sex.valueOf(m.group(3).toUpperCase());
-        LocalDate date1 = parseStringDate(m.group(4));
+    private static void processMatchedPattern1(Matcher m) {
+        String firstName1 = m.group(2);
+        String lastName1 = m.group(3);
+        Sex sex1 = Sex.valueOf(m.group(4).toUpperCase());
+        LocalDate date1 = parseStringDate(m.group(5));
 
-        String command = m.group(5);
+        String command = m.group(6);
 
         System.out.println("Person ( " + firstName1 + " , " + lastName1 + " , " + sex1 + " , " + date1 + " )");
 
         Person person1 = new Person(firstName1, lastName1, sex1, date1);
 
-        String firstName2 = m.group(6);
-        String lastName2 = m.group(7);
-        Sex sex2 = Sex.valueOf(m.group(8).toUpperCase());
-        LocalDate date2 = parseStringDate(m.group(9));
+        String firstName2 = m.group(8);
+        String lastName2 = m.group(9);
+        Sex sex2 = Sex.valueOf(m.group(10).toUpperCase());
+        LocalDate date2 = parseStringDate(m.group(11));
 
         System.out.println("Person ( " + firstName2 + " , " + lastName2 + " , " + sex2 + " , " + date2 + " )");
 
         Person person2 = new Person(firstName2, lastName2, sex2, date2);
     }
 
-    private static void proccessMatchedPattern2(Matcher m) {
-        String firstName1 = m.group(1);
-        String lastName1 = m.group(2);
-        Sex sex1 = Sex.valueOf(m.group(3).toUpperCase());
-        LocalDate date1 = parseStringDate(m.group(4));
+    private static void processMatchedPattern2(Matcher m) {
+        String firstName1 = m.group(2);
+        String lastName1 = m.group(3);
+        Sex sex1 = Sex.valueOf(m.group(4).toUpperCase());
+        LocalDate date1 = parseStringDate(m.group(5));
 
         System.out.println("Person ( " + firstName1 + " , " + lastName1 + " , " + sex1 + " , " + date1 + " )");
 
         Person person1 = new Person(firstName1, lastName1, sex1, date1);
 
-        String command = m.group(5);
+        String command = m.group(6);
 
-        String pos2 = m.group(6);
+        String pos2 = m.group(7);
 
         System.out.println("Person : pos " +  pos2 );
     }
 
-    private static void proccessMatchedPattern3(Matcher m) {
+    private static void processMatchedPattern3(Matcher m) {
         String pos1 = m.group(1);
 
         System.out.println("Person : pos " +  pos1 );
 
         String command = m.group(2);
 
-        String firstName2 = m.group(3);
-        String lastName2 = m.group(4);
-        Sex sex2 = Sex.valueOf(m.group(5).toUpperCase());
-        LocalDate date2 = parseStringDate(m.group(6));
+        String firstName2 = m.group(4);
+        String lastName2 = m.group(5);
+        Sex sex2 = Sex.valueOf(m.group(6).toUpperCase());
+        LocalDate date2 = parseStringDate(m.group(7));
 
         Person person2 = new Person(firstName2, lastName2, sex2, date2);
 
         System.out.println("Person ( " + firstName2 + " , " + lastName2 + " , " + sex2 + " , " + date2 + " )");
     }
 
-    private static void proccessMatchedPattern4(Matcher m) {
+    private static void processMatchedPattern4(Matcher m) {
         String pos1 = m.group(1);
 
         System.out.println("Person : pos " +  pos1 );
@@ -204,22 +203,22 @@ public class Main {
         System.out.println("Person : pos " +  pos2 );
     }
 
-    private static void proccessMatchedPattern5(Matcher m) {
+    private static void processMatchedPattern5(Matcher m) {
         String command = m.group(1);
 
-        String firstName1 = m.group(2);
-        String lastName1 = m.group(3);
-        Sex sex1 = Sex.valueOf(m.group(4).toUpperCase());
-        LocalDate date1 = parseStringDate(m.group(5));
+        String firstName1 = m.group(3);
+        String lastName1 = m.group(4);
+        Sex sex1 = Sex.valueOf(m.group(5).toUpperCase());
+        LocalDate date1 = parseStringDate(m.group(6));
 
         System.out.println("Person ( " + firstName1 + " , " + lastName1 + " , " + sex1 + " , " + date1 + " )");
 
-        String level = m.group(6);
+        String level = m.group(7);
 
         System.out.println("Person : level " +  level );
     }
 
-    private static void proccessMatchedPattern6(Matcher m) {
+    private static void processMatchedPattern6(Matcher m) {
         String command = m.group(1);
 
         String pos = m.group(2);
@@ -233,7 +232,7 @@ public class Main {
 
     private static void showMactherGroups(Matcher m){
         System.out.println("--------");
-        for (int i = 0; i < m.groupCount(); i++) {
+        for (int i = 0; i <= m.groupCount(); i++) {
             System.out.println(i + " : " + m.group(i));
         }
     }
