@@ -6,12 +6,29 @@
 2 amigo { Eduardo , Huerta , M , 03/10/1995 } //Daniel amigo Eduardo
 { Oscar Eliut , Sandoval , M , 23/07/1994 } amigo 1 //Oscar Eliut amigo Victor Manuel
 { Saul Alonso , Palazuelos , M , 07/08/1995 } amigo 11 //Saul Alonso amigo manuel
-{ Misael , Zazueta , M , 31/07/1995 } amigo 7 //Misauel amigo Luis Marcos
+{ Misael , Zazueta , M , 31/07/1995 } amigo 7 //Misael amigo Luis Marcos
 10 amigo 8 //Imperial amigo Zavala
+5 amigo 7 // Oscar Eliut amigo Luis Marcos
+3 amigo 5 //Glenn Suasnavar amigo de Oscar Eliut
 
-{ Victor Manuel , Batiz , M , 12/03/1974 } amigo 6 //Repeticion de linea 1
+{ Victor Manuel  , Batiz , M , 12/03/1974 } amigo 6 //Repeticion de linea 1
 10 amigo { Rafael , Imperial ,M , 04/10/1993 } //Imperial amigo Imperial
 
 
-amigos { Daniel , Leyva , M , 20/02/1995 } 1
-amigos 1 2
+1 amigos 6 //Victor Manuel amigos Saul Alonso
+6 amigos 9 //Saul Alonso amigos Eduardo
+{ Oscar Eliut , Sandoval , M , 23/07/1994 } amigos 7 //Oscar Eliut amigos Luis Marcos
+{ Glenn Suasnavar , Della Rocca , M , 19/02/1994 } amigos 1 //Glenn amigos victor
+6 amigos { Luis Marcos , Plata , M , 31/10/1986 } //Saul amigo de Luis Marcos
+11 amigos { Rafael , Zavala , M , 24/10/1995 }
+
+{ Daniel , Leyva , M , 20/02/1995 } eliminar { Luis Marcos, Plata , M , 31/10/1986 }
+2 eliminar { Eduardo , Huerta , M , 03/10/1995 } //Daniel amigo Eduardo
+{ Misael , Zazueta , M , 31/07/1995 } amigo 7 //Misael amigo Luis Marcos
+
+amigos 7 1
+amigos 8 3
+amigos 1 3
+amigos { Daniel , Leyva , M , 20/02/1995 } 2
+amigos { Glenn Suasnavar , Della Rocca , M , 19/02/1994 } 4
+amigos { Saul Alonso , Palazuelos , M , 07/08/1995 } 2

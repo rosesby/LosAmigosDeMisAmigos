@@ -44,6 +44,11 @@ public class Person {
 
     @Override
     public String toString() {
+        return  "Person " + "[ " + firstName + " , " + lastName + " , " + sex + " , " + birthDate + " ]";
+    }
+
+    /*@Override
+    public String toString() {
         return  ConsoleColor.PURPLE +"Person "
                 + ConsoleColor.BLUE + "[ "
                 + ConsoleColor.CYAN+ firstName
@@ -55,6 +60,5 @@ public class Person {
                 + ConsoleColor.CYAN + birthDate
                 + ConsoleColor.BLUE + " ]"
                 + ConsoleColor.RESET;
-
-    }
+    }*/
 }

@@ -1,7 +1,5 @@
 package dataStructure;
 
-import org.w3c.dom.Node;
-
 import java.util.*;
 
 //todo implement equals, check internal or nested classes for architecture
@@ -20,7 +18,7 @@ public class GraphT<T> {
     }
 
     public boolean addNode(NodeT<T> node) {
-        if (!doesNodeExist(node)) {
+        if (!doesNodeExistInternally(node)) {
             nodes.add(node);
             return true;
         } else return false;
@@ -49,42 +47,69 @@ public class GraphT<T> {
         return nodePair;
     }
 
-    public void setUniDirectionalHedge(NodeT<T> nodeA, NodeT<T> nodeB) {
-        NodeT<T>[] nodePair = getInternalNodesInPairs(nodeA, nodeB);
-        if (isNodePairNull(nodePair)) nodePair[0].addNeighbor(nodePair[1]);
-    }
-
-    public void setBiDirectionalHedge(NodeT<T> nodeA, NodeT<T> nodeB) {
+    public boolean setUniDirectionalHedge(NodeT<T> nodeA, NodeT<T> nodeB) {
         NodeT<T>[] nodePair = getInternalNodesInPairs(nodeA, nodeB);
         if (isNodePairNull(nodePair)) {
-            nodePair[0].addNeighbor(nodePair[1]);
-            nodePair[1].addNeighbor(nodePair[0]);
+            boolean result = nodePair[0].addNeighbor(nodePair[1]);
+            return result;
         }
+        return false;
     }
 
-    public void unSetUniDirectionalHedge(NodeT<T> nodeA, NodeT<T> nodeB) {
-        NodeT<T>[] nodePair = getInternalNodesInPairs(nodeA, nodeB);
-        if (isNodePairNull(nodePair)) nodePair[0].removeNeighbor(nodePair[1]);
-    }
-
-    public void unSetBiDirectionalHedge(NodeT<T> nodeA, NodeT<T> nodeB) {
+    public boolean setBiDirectionalHedge(NodeT<T> nodeA, NodeT<T> nodeB) {
         NodeT<T>[] nodePair = getInternalNodesInPairs(nodeA, nodeB);
         if (isNodePairNull(nodePair)) {
-            nodeA.removeNeighbor(nodeB);
-            nodeB.removeNeighbor(nodeA);
+            boolean resultA = nodePair[0].addNeighbor(nodePair[1]);
+            boolean resultB = nodePair[1].addNeighbor(nodePair[0]);
+            boolean result = resultA && resultB;
+
+            if(!result){
+                if(resultA) nodePair[0].removeNeighbor(nodePair[1]);
+                if(resultA) nodePair[1].removeNeighbor(nodePair[0]);
+            }
+            return result;
         }
+        return false;
+    }
+
+    public boolean unSetUniDirectionalHedge(NodeT<T> nodeA, NodeT<T> nodeB) {
+        NodeT<T>[] nodePair = getInternalNodesInPairs(nodeA, nodeB);
+        if (isNodePairNull(nodePair)) {
+            boolean result = nodePair[0].removeNeighbor(nodePair[1]);
+            return result;
+        }
+        return false;
+    }
+
+    public boolean unSetBiDirectionalHedge(NodeT<T> nodeA, NodeT<T> nodeB) {
+        NodeT<T>[] nodePair = getInternalNodesInPairs(nodeA, nodeB);
+        if (isNodePairNull(nodePair)) {
+            boolean resultA = nodePair[0].removeNeighbor(nodePair[1]);
+            boolean resultB = nodePair[1].removeNeighbor(nodePair[0]);
+            boolean result = resultA && resultB;
+
+            if(!result){
+                if(resultA) nodePair[0].addNeighbor(nodePair[1]);
+                if(resultA) nodePair[1].addNeighbor(nodePair[0]);
+            }
+            return result;
+        }
+        return false;
     }
 
     public boolean doesUnidirectionalHedgeExists(NodeT<T> nodeA, NodeT<T> nodeB) {
-        return nodeA.getNeighbors().contains(nodeB);
+        NodeT<T>[] nodePair = getInternalNodesInPairs(nodeA, nodeB);
+        return nodePair[0].getNeighbors().contains(nodePair[1]);
     }
 
     public boolean doesBidirectionalHedgeExists(NodeT<T> nodeA, NodeT<T> nodeB) {
-        return nodeA.getNeighbors().contains(nodeB) && nodeB.getNeighbors().contains(nodeA);
+        NodeT<T>[] nodePair = getInternalNodesInPairs(nodeA, nodeB);
+        return nodePair[0].getNeighbors().contains(nodePair[1]) && nodePair[1].getNeighbors().contains(nodePair[0]);
     }
 
-    public boolean doesNodeExist(NodeT<T> targetNode) {
-        return nodes.stream().anyMatch(node -> node.equals(targetNode));
+    public boolean doesNodeExistInternally(NodeT<T> targetNode) {
+        NodeT<T> internalNode = getInternalNodeThatMatches(targetNode);
+        return nodes.stream().anyMatch(node -> node.equals(internalNode));
     }
 
     public NodeT<T> getInternalNodeThatMatches(T targetObject) {
@@ -102,10 +127,6 @@ public class GraphT<T> {
     public NodeT<T> getInternalNodeByPositionInCollection(int targetPositionNumber) {
         if (targetPositionNumber > nodes.size() || targetPositionNumber < 0) return null;
         else return nodes.get(targetPositionNumber);
-    }
-
-    public void executeSearchByLevel(dataStructure.NodeT<T> node, int searchLevel) {
-        return;
     }
 
     public boolean searchIfAnyHedgeChainExistsBFS(NodeT<T> nodeA, NodeT<T> nodeB) {
@@ -153,12 +174,18 @@ public class GraphT<T> {
         Queue<NodeT<T>> nextSearchQueue = new LinkedList<>();
         ArrayList<NodeT<T>> alreadyRevisedNodes = new ArrayList<NodeT<T>>();
 
+        if(checkEqualsByNodeInternalObject) baseNode = getInternalNodeThatMatches(baseNode.getInstance());
+        else baseNode = getInternalNodeThatMatches(baseNode);
+
+        if(baseNode == null) return null;
+
         actualSearchQueue.add(baseNode); //add base node for the first iteration (level 0)
         for (int i = 0; i <= hedgeChainLevel; i++) {
-            if (!actualSearchQueue.isEmpty()) { //Check if actual search has hedges, the first iteration (level 0) has 1 element, if no node at actual level search has hedges search it will exit the next iteration
+            //Check if actual search has hedges, the first iteration (level 0) has 1 element, if no node at actual level search has hedges search it will exit the next iteration
+            if (!actualSearchQueue.isEmpty()) {
                 while (!actualSearchQueue.isEmpty()) {
                     actualSearchQueue.peek().getNeighbors()
-                            .forEach(node -> { //Check for all node if has not been processed or added to the queue before
+                            .forEach(node -> {
                                 if (!(alreadyRevisedNodes.contains(node))) {
                                     nextSearchQueue.add(node); //Check node for adding to queue
                                     alreadyRevisedNodes.add(node); //add actual level node to the visited nodes list
@@ -166,7 +193,7 @@ public class GraphT<T> {
                             });
                     actualSearchQueue.poll(); //remove actual (first) node from queue
                 }
-                actualSearchQueue = nextSearchQueue;
+                actualSearchQueue = new LinkedList<NodeT<T>>(nextSearchQueue);
                 nextSearchQueue.clear();
             } else return null;
         }
