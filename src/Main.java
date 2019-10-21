@@ -4,6 +4,7 @@
  */
 
 import dataStructure.GraphT;
+import dataStructure.NodeT;
 import domain.model.Person;
 import domain.model.Sex;
 
@@ -11,8 +12,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,10 +46,10 @@ public class Main {
         FileReader fileReaderCatalog = new FileReader("src/data/inputCatalog");
         BufferedReader inCatalog = new BufferedReader(fileReaderCatalog);
 
-        FileReader fileReaderQuestions = new FileReader("src/data/inputQuestions");
+        FileReader fileReaderQuestions = new FileReader("src/data/inputActions");
         BufferedReader inQuestions = new BufferedReader(fileReaderQuestions);
 
-        String inLineData = "([{][\\s]*([A-z]+)[\\s]*,[\\s]*([A-z]+)[\\s]*,[\\s]*(M|F|U)[\\s]*,[\\s]*([0-9]{2}[/][0-9]{2}[/][0-9]{4})[\\s]*[}])";
+        String inLineData = "([{][\\s]*([A-z]+[[\\s]*[A-z]+]*)[\\s]*,[\\s]*([A-z]+[[\\s]*[A-z]+]*)[\\s]*,[\\s]*(M|F|U)[\\s]*,[\\s]*([0-9]{2}[/][0-9]{2}[/][0-9]{4})[\\s]*[}])";
         String pos = "([0-9]+)";
         String nivel = "([0-9]+)";
 
@@ -73,9 +74,7 @@ public class Main {
                 graph.addNode(person);
             }
         }
-
-        graph.getNodes().forEach(node -> System.out.println(node));
-
+        // graph.getNodes().forEach(node -> System.out.println(node));
         //todo change to 2 regex
         String stringPattern1 = "[\\s]*" + inLineData + "[\\s]*" + commandAtCenter + "[\\s]*" + inLineData + "(.*)";
         String stringPattern2 = "[\\s]*" + inLineData + "[\\s]*" + commandAtCenter + "[\\s]*" + pos + "(.*)";
@@ -128,11 +127,31 @@ public class Main {
                 }
             }
         }
-        lineCounter++;
+
+        graph.getNodes().forEach(node -> System.out.println(node));
     }
 
-    private static void create(Person person1, Person person2) {
-        graph.addBidirectionalHedge(person1, person2);
+    private static void processAction(Person personA, Person personB, String action){
+        NodeT<Person> NodeA = new NodeT<Person>(personA);
+        NodeT<Person> NodeB = new NodeT<Person>(personB);
+
+        switch (action){
+            case "amigo":
+                graph.setBiDirectionalHedge(NodeA,NodeB);
+                break;
+            case "eliminar":
+                graph.unSetBiDirectionalHedge(NodeA,NodeB);
+                break;
+            case "amigos":
+                graph.checkBidirectionalHedge(NodeA,NodeB);
+                break;
+        }
+    }
+
+    private static void processAction(Person person, String searchLevelString){
+        NodeT<Person> node = new NodeT<Person>(person);
+        int searchLevel = Integer.parseInt(searchLevelString);
+        graph.executeSearchByLevel(node, searchLevel);
     }
 
     private static void processMatchedPattern1(Matcher m) {
@@ -140,67 +159,63 @@ public class Main {
         String lastName1 = m.group(3);
         Sex sex1 = Sex.valueOf(m.group(4).toUpperCase());
         LocalDate date1 = parseStringDate(m.group(5));
-
         String command = m.group(6);
-
-        System.out.println("Person ( " + firstName1 + " , " + lastName1 + " , " + sex1 + " , " + date1 + " )");
-
-        Person person1 = new Person(firstName1, lastName1, sex1, date1);
-
+        Person personA = new Person(firstName1, lastName1, sex1, date1);
         String firstName2 = m.group(8);
         String lastName2 = m.group(9);
         Sex sex2 = Sex.valueOf(m.group(10).toUpperCase());
         LocalDate date2 = parseStringDate(m.group(11));
+        Person personB = new Person(firstName2, lastName2, sex2, date2);
 
+        System.out.println("Person ( " + firstName1 + " , " + lastName1 + " , " + sex1 + " , " + date1 + " )");
         System.out.println("Person ( " + firstName2 + " , " + lastName2 + " , " + sex2 + " , " + date2 + " )");
 
-        Person person2 = new Person(firstName2, lastName2, sex2, date2);
+        processAction(personA, personB, command);
     }
 
     private static void processMatchedPattern2(Matcher m) {
-        String firstName1 = m.group(2);
-        String lastName1 = m.group(3);
+        String firstNameA = m.group(2);
+        String lastNameA = m.group(3);
         Sex sex1 = Sex.valueOf(m.group(4).toUpperCase());
-        LocalDate date1 = parseStringDate(m.group(5));
-
-        System.out.println("Person ( " + firstName1 + " , " + lastName1 + " , " + sex1 + " , " + date1 + " )");
-
-        Person person1 = new Person(firstName1, lastName1, sex1, date1);
-
+        LocalDate dateA = parseStringDate(m.group(5));
+        Person personA = new Person(firstNameA, lastNameA, sex1, dateA);
         String command = m.group(6);
+        String posB = m.group(7);
+        Person personB = graph.getInternalNodeByPositionInCollection(Integer.parseInt(posB)-1).getInstance();
 
-        String pos2 = m.group(7);
+        System.out.println("Person ( " + firstNameA + " , " + lastNameA + " , " + sex1 + " , " + dateA + " )");
+        System.out.println("Person : pos " +  posB );
 
-        System.out.println("Person : pos " +  pos2 );
+        processAction(personA, personB, command);
     }
 
     private static void processMatchedPattern3(Matcher m) {
-        String pos1 = m.group(1);
-
-        System.out.println("Person : pos " +  pos1 );
-
+        String posA = m.group(1);
+        Person personA = graph.getInternalNodeByPositionInCollection(Integer.parseInt(posA)-1).getInstance();
         String command = m.group(2);
-
         String firstName2 = m.group(4);
         String lastName2 = m.group(5);
         Sex sex2 = Sex.valueOf(m.group(6).toUpperCase());
         LocalDate date2 = parseStringDate(m.group(7));
+        Person personB = new Person(firstName2, lastName2, sex2, date2);
 
-        Person person2 = new Person(firstName2, lastName2, sex2, date2);
-
+        System.out.println("Person : pos " +  posA );
         System.out.println("Person ( " + firstName2 + " , " + lastName2 + " , " + sex2 + " , " + date2 + " )");
+
+        processAction(personA, personB, command);
     }
 
     private static void processMatchedPattern4(Matcher m) {
-        String pos1 = m.group(1);
-
-        System.out.println("Person : pos " +  pos1 );
-
+        String posA = m.group(1);
+        Person personA = graph.getInternalNodeByPositionInCollection(Integer.parseInt(posA)-1).getInstance();
         String command = m.group(2);
+        String posB = m.group(3);
+        Person personB = graph.getInternalNodeByPositionInCollection(Integer.parseInt(posB)-1).getInstance();
 
-        String pos2 = m.group(3);
+        System.out.println("Person : pos " +  posA );
+        System.out.println("Person : pos " +  posB );
 
-        System.out.println("Person : pos " +  pos2 );
+        processAction(personA, personB, command);
     }
 
     private static void processMatchedPattern5(Matcher m) {
@@ -210,23 +225,18 @@ public class Main {
         String lastName1 = m.group(4);
         Sex sex1 = Sex.valueOf(m.group(5).toUpperCase());
         LocalDate date1 = parseStringDate(m.group(6));
-
-        System.out.println("Person ( " + firstName1 + " , " + lastName1 + " , " + sex1 + " , " + date1 + " )");
-
         String level = m.group(7);
 
+        System.out.println("Person ( " + firstName1 + " , " + lastName1 + " , " + sex1 + " , " + date1 + " )");
         System.out.println("Person : level " +  level );
     }
 
     private static void processMatchedPattern6(Matcher m) {
         String command = m.group(1);
-
         String pos = m.group(2);
-
-        System.out.println("Person : pos " +  pos );
-
         String level = m.group(3);
 
+        System.out.println("Person : pos " +  pos );
         System.out.println("Person : level " +  level );
     }
 

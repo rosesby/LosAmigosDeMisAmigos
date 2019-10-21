@@ -1,0 +1,10 @@
+{ Victor , Batiz , M , 12/03/1974 } amigo { Saul , Palazuelos , M , 07/08/1995 }
+{ Daniel , Leyva , M , 20/02/1995 } amigo { Marcos , Plata , M , 31/10/1986 }
+6 amigo { Eduardo , Huerta , M , 03/10/1995 } //Saul amigo Eduardo
+9 amigo { Rafael , Imperial ,M , 04/10/1993 } //Eduardo amigo Imperial
+{ Oscar , Sandoval , M , 23/07/1994 } amigo 1 //Oscar amigo victor
+{ Saul , Palazuelos , M , 07/08/1995 } amigo 11 //Saul amigo manuel
+10 amigo 8 //Imperial amigo Zavala
+
+{ Victor , Batiz , M , 12/03/1974 } amigo 6 //Repeticion de linea 1
+10 amigo { Rafael , Imperial ,M , 04/10/1993 } //Imperial amigo Imperial

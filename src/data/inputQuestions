@@ -1,7 +1,0 @@
-{ Carlos , Palazuelos , M, 01/11/1960 } amigo {Melesio,Palazuelos,m,04/08/1950}
-{ Angela , Palazuelos , F , 02/05/1980 } amigo 2
-1 amigo {Adriana,Palazuelos,F,07/09/1990}
-1 amigo 2
-
-amigos {Adriana,Palazuelos,F,07/09/1990} 1
-amigos 2 1

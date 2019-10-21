@@ -2,11 +2,13 @@ package dataStructure;
 
 import domain.model.Person;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 
 //todo implement equals, check internal or nested classes for architecture
 public class GraphT<T>{
     private ArrayList<NodeT<T>> nodes;
+    private Object NodeT;
 
     public GraphT() {
         nodes = new ArrayList<NodeT<T>>();
@@ -21,54 +23,85 @@ public class GraphT<T>{
         nodes.add(node);
     }
 
-    /**
-     * Crea una relación nueva de la ciudad 1 a la ciudad 2
-     *
-     * @param strCity1 nombre de la ciudad1
-     * @param strCity2 nombre de la ciudad2
-     */
-/*    public void createRelation(String strCity1, String strCity2) {
-        Map.City city1 = getExistingCityByName(strCity1);
-        Map.City city2 = getExistingCityByName(strCity2);
-        city1.addLink(city2);
-    }*/
 
-    /**
-     * Verifica la existencia de un elemento con el nombre provisto
-     * Si el elemento no existe lo crea
-     *
-     * @param strCity nombre de la ciudad
-     */
-/*    public void createCityIfDoesNotExists(String strCity) {
-        boolean check = checkIfTowerExistsByName(strCity);
-        if (!check) createNode(strCity);
-    }*/
-
-    /**
-     * Verifica la existencia de un elemento con el nombre provisto
-     * Se ignora la capitalización del parametro
-     *
-     * @param
-     * @return regresa si el elemento existe (boolean)
-     */
-    private boolean checkIfTowerExistsByName(NodeT<T> nodeT) {
-        return nodes.stream().
-                anyMatch(node -> node.equals(nodeT));
+    public boolean checkInternalNodesInPairs(NodeT<T> nodeA, NodeT<T> nodeB){
+        return (nodeA != null && nodeB != null);
     }
 
-    /**
-     * Obtiene el objeto en memoria con el nombre provisto
-     * Se ignora la capitalización del parametro
-     *
-     * @param strCityName Nombre de la ciudad
-     * @return regresa el objeto ciudad con el nombre provisto
-     */
-/*    private Map.City getExistingCityByName(String strCityName) {
-        return nodes.stream()
-                .filter(city -> city.getName().equalsIgnoreCase(strCityName))
-                .findFirst()
-                .get();
-    }*/
+    public boolean checkInternalNodesInPairs(NodeT<T>[] nodePair){
+        return (nodePair[0] != null && nodePair[1] != null);
+    }
+
+    public NodeT<T>[] getInternalNodesInPairs(NodeT<T> nodeA, NodeT<T> nodeB){
+        NodeT<T> nodeAInternal = getInternalNodeThatMatches(nodeA);
+        NodeT<T> nodeBInternal = getInternalNodeThatMatches(nodeB);
+        NodeT<T>[] nodePair = new NodeT[]{nodeAInternal, nodeBInternal};
+        return nodePair;
+    }
+
+    public void setUniDirectionalHedge(NodeT<T> nodeA, NodeT<T> nodeB) {
+        NodeT<T>[] nodePair = getInternalNodesInPairs(nodeA,  nodeB);
+        checkInternalNodesInPairs(nodePair);
+        if(checkInternalNodesInPairs(nodePair)) nodePair[0].addNeighbor(nodePair[1]);
+    }
+
+    public void setBiDirectionalHedge(NodeT<T> nodeA, NodeT<T> nodeB) {
+        NodeT<T>[] nodePair = getInternalNodesInPairs(nodeA,  nodeB);
+        checkInternalNodesInPairs(nodePair);
+        if(checkInternalNodesInPairs(nodePair)) {
+            nodePair[0].addNeighbor(nodePair[1]);
+            nodePair[1].addNeighbor(nodePair[0]);
+        }
+    }
+
+    public void unSetUniDirectionalHedge(NodeT<T> nodeA, NodeT<T> nodeB) {
+        NodeT<T>[] nodePair = getInternalNodesInPairs(nodeA,  nodeB);
+        checkInternalNodesInPairs(nodePair);
+        if(checkInternalNodesInPairs(nodePair)) nodePair[0].removeNeighbor(nodePair[1]);
+    }
+
+    public void unSetBiDirectionalHedge(NodeT<T> nodeA, NodeT<T> nodeB) {
+        NodeT<T>[] nodePair = getInternalNodesInPairs(nodeA,  nodeB);
+        checkInternalNodesInPairs(nodePair);
+        if(checkInternalNodesInPairs(nodePair)) {
+            nodeA.removeNeighbor(nodeB);
+            nodeB.removeNeighbor(nodeA);
+        }
+    }
+
+    public boolean checkUnidirectionalHedge(NodeT<T> nodeA, NodeT<T> nodeB){
+        return nodeA.getNeighbors().contains(nodeB);
+    }
+
+    public boolean checkBidirectionalHedge(NodeT<T> nodeA, NodeT<T> nodeB){
+        return nodeA.getNeighbors().contains(nodeB) && nodeB.getNeighbors().contains(nodeA);
+    }
+
+    public boolean checkIfNodeExist(NodeT<T> targetNode){
+        return nodes.stream().anyMatch(node-> node.equals(targetNode));
+    }
+
+    public NodeT<T> getInternalNodeThatMatches(T targetNode){
+        Optional<NodeT<T>> searchedNode = nodes.stream().filter(node -> node.getInstance().equals(targetNode)).findFirst();
+        if (searchedNode.isPresent()) return searchedNode.get();
+        else return null;
+    }
+
+    public NodeT<T> getInternalNodeThatMatches(NodeT<T> targetNode){
+        Optional<NodeT<T>> searchedNode = nodes.stream().filter(node-> node.equals(targetNode)).findFirst();
+        if (searchedNode.isPresent()) return searchedNode.get();
+        else return null;
+    }
+
+    public NodeT<T> getInternalNodeByPositionInCollection(int targetPositionNumber){
+        if(targetPositionNumber > nodes.size() || targetPositionNumber < 0 ) return null;
+        else return nodes.get(targetPositionNumber);
+    }
+
+
+
+    public void executeSearchByLevel(dataStructure.NodeT<T> node, int searchLevel) {
+    }
 
     /**
      * Ejecuta una busqueda de relacion entre elementos usando el algoritmo BFS para Grafos
@@ -151,6 +184,5 @@ public class GraphT<T>{
         return nodes;
     }
 
-    public void addBidirectionalHedge(T person1, T person2) {
-    }
+
 }

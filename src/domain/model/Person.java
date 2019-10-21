@@ -61,6 +61,8 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Person ( " + firstName + " , " + lastName + " , " + sex + " , " + birthDate + " )";
+        String stringData = "Person ( " + firstName + " , " + lastName + " , " + sex + " , " + birthDate + " )";
+        String stringDataSpacesTrimmed = stringData.trim().replaceAll("[\\s]+"," ");
+        return stringDataSpacesTrimmed;
     }
 }
