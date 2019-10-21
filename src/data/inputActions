@@ -1,10 +1,17 @@
-{ Victor , Batiz , M , 12/03/1974 } amigo { Saul , Palazuelos , M , 07/08/1995 }
-{ Daniel , Leyva , M , 20/02/1995 } amigo { Marcos , Plata , M , 31/10/1986 }
-6 amigo { Eduardo , Huerta , M , 03/10/1995 } //Saul amigo Eduardo
+{ Victor Manuel , Batiz , M , 12/03/1974 } amigo { Saul Alonso , Palazuelos , M , 07/08/1995 }
+{ Daniel , Leyva , M , 20/02/1995 } amigo { Luis Marcos, Plata , M , 31/10/1986 }
+{ Glenn Suasnavar, Della Rocca , M , 19/02/1994 } amigo { Misael , Zazueta , M , 31/07/1995 }
+6 amigo { Eduardo , Huerta , M , 03/10/1995 } //Saul Alonso amigo Eduardo
 9 amigo { Rafael , Imperial ,M , 04/10/1993 } //Eduardo amigo Imperial
-{ Oscar , Sandoval , M , 23/07/1994 } amigo 1 //Oscar amigo victor
-{ Saul , Palazuelos , M , 07/08/1995 } amigo 11 //Saul amigo manuel
+2 amigo { Eduardo , Huerta , M , 03/10/1995 } //Daniel amigo Eduardo
+{ Oscar Eliut , Sandoval , M , 23/07/1994 } amigo 1 //Oscar Eliut amigo Victor Manuel
+{ Saul Alonso , Palazuelos , M , 07/08/1995 } amigo 11 //Saul Alonso amigo manuel
+{ Misael , Zazueta , M , 31/07/1995 } amigo 7 //Misauel amigo Luis Marcos
 10 amigo 8 //Imperial amigo Zavala
 
-{ Victor , Batiz , M , 12/03/1974 } amigo 6 //Repeticion de linea 1
+{ Victor Manuel , Batiz , M , 12/03/1974 } amigo 6 //Repeticion de linea 1
 10 amigo { Rafael , Imperial ,M , 04/10/1993 } //Imperial amigo Imperial
+
+
+amigos { Daniel , Leyva , M , 20/02/1995 } 1
+amigos 1 2

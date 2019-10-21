@@ -1,5 +1,7 @@
 package dataStructure;
 
+import util.ConsoleColor;
+
 import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -21,7 +23,7 @@ public class NodeT<T> {
      * @return
      */
     public boolean addNeighbor(NodeT<T> object){
-        boolean result = (neighbors.stream().anyMatch(node->node.equals(object)) || object.equals(instance))?  false : true;
+        boolean result = (neighbors.stream().anyMatch(node->node.equals(object)) || object.equals(this.instance))?  false : true;
         if(result)neighbors.add(object);
         return result;
     }
@@ -49,8 +51,8 @@ public class NodeT<T> {
     @Override
     public String toString() {
        String instanceToString = this.instance.toString();
-       String neighborsToString = "Neighbours : ";
-       for (NodeT<T> obj : this.neighbors) neighborsToString += obj.getInstance().toString();
+       String neighborsToString = ConsoleColor.PURPLE + "Neighbours : " + ConsoleColor.RESET;
+       for (NodeT<T> obj : this.neighbors) neighborsToString += obj.getInstance().toString() + " ";
        return instanceToString + " " + neighborsToString;
     }
 

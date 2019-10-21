@@ -1,5 +1,7 @@
 package domain.model;
 
+import util.ConsoleColor;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -10,8 +12,8 @@ public class Person {
     private LocalDate birthDate;
 
     public Person(String firstName, String lastName, Sex sex, LocalDate birthDate) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.firstName = firstName.replaceAll("[\\s]+"," ");;
+        this.lastName = lastName.replaceAll("[\\s]+"," ");;
         this.sex = sex;
         this.birthDate = birthDate;
     }
@@ -40,29 +42,19 @@ public class Person {
         return Objects.hash(firstName, lastName, sex, birthDate);
     }
 
-    /*@Override
-    public boolean equals(Object o) {
-        // self check
-        if (this == o)
-            return true;
-        // null check
-        if (o == null)
-            return false;
-        // type check and cast
-        if (getClass() != o.getClass())
-            return false;
-        Person person = (Person) o;
-        // field comparison
-        return Objects.equals(firstName, person.firstName)
-                && Objects.equals(lastName, person.lastName)
-                && Objects.equals(sex, person.sex)
-                && Objects.equals(birthDate, person.birthDate);
-    }*/
-
     @Override
     public String toString() {
-        String stringData = "Person ( " + firstName + " , " + lastName + " , " + sex + " , " + birthDate + " )";
-        String stringDataSpacesTrimmed = stringData.trim().replaceAll("[\\s]+"," ");
-        return stringDataSpacesTrimmed;
+        return  ConsoleColor.PURPLE +"Person "
+                + ConsoleColor.BLUE + "[ "
+                + ConsoleColor.CYAN+ firstName
+                + ConsoleColor.BLUE+ " , "
+                + ConsoleColor.CYAN + lastName
+                + ConsoleColor.BLUE+ " , "
+                + ConsoleColor.CYAN + sex
+                + ConsoleColor.BLUE + " , "
+                + ConsoleColor.CYAN + birthDate
+                + ConsoleColor.BLUE + " ]"
+                + ConsoleColor.RESET;
+
     }
 }
