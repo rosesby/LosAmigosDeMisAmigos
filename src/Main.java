@@ -9,10 +9,7 @@ import domain.model.Person;
 import domain.model.Sex;
 
 import javax.sound.midi.Soundbank;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -42,6 +39,20 @@ public class Main {
      */
     public static void main(String[] args) throws IOException {
         graph = new GraphT<Person>();
+
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+
+        String regexFilename = "^[[\\w][\\d][\\s]-_]+$";
+        Pattern patternRegexFilename = Pattern.compile(regexFilename);
+        Matcher matcherFileName;
+
+        String filename = "";
+        do {
+            System.out.println("Ingrese el nombre del archivo de texto de salida");
+            filename = bufferedReader.readLine();
+            matcherFileName = patternRegexFilename.matcher(filename);
+        } while (!matcherFileName.find());
+        filename = "out/" + filename;
 
         FileReader fileReaderCatalog = new FileReader("src/data/inputCatalog");
         BufferedReader inCatalog = new BufferedReader(fileReaderCatalog);
@@ -78,7 +89,7 @@ public class Main {
             }
         }
 
-        PrintWriter writer = new PrintWriter("the-file-name.txt", "UTF-8");
+        PrintWriter writer = new PrintWriter(filename + ".txt", "UTF-8");
         int lineCounter = 1;
         while (true) {
             String dataLine = inQuestions.readLine();
@@ -169,7 +180,7 @@ public class Main {
     private static void processAction(Person person, String searchLevelString) {
         NodeT<Person> node = new NodeT<Person>(person);
         int searchLevel = Integer.parseInt(searchLevelString);
-        Queue<NodeT<Person>> queue = graph.searchForExclusiveNodesAtHedgeChainLevelBFS(node, searchLevel);
+        ArrayList<NodeT<Person>> queue = graph.searchForExclusiveNodesAtHedgeChainLevelBFS(node, searchLevel);
 
         ArrayList<NodeT<Person>> levelFriends;
         if (queue == null) levelFriends = new ArrayList<>();
@@ -183,7 +194,7 @@ public class Main {
             levelFriendList += nodep.getInstance() + " ";
         }
 
-        System.out.print("Amigos Nivel " + searchLevel + " de " + person + " : " + levelFriendList);
+        System.out.print("Amigos Exclusivos de Nivel " + searchLevel + " de " + person + " : " + levelFriendList);
     }
 
     private static void showMactherGroups(Matcher m) {

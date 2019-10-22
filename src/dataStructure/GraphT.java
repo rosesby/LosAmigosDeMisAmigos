@@ -169,7 +169,36 @@ public class GraphT<T> {
         return null;
     }
 
-    public Queue<NodeT<T>> searchForExclusiveNodesAtHedgeChainLevelBFS(NodeT<T> baseNode, int hedgeChainLevel) {
+    public ArrayList<NodeT<T>> searchForExclusiveNodesAtHedgeChainLevelBFS(NodeT<T> baseNode, int hedgeChainLevel) {
+        ArrayList<NodeT<T>> actualSearchQueue = new ArrayList<>();
+        ArrayList<NodeT<T>> nextSearchQueue = new ArrayList<>();
+        ArrayList<NodeT<T>> alreadyRevisedNodes = new ArrayList<>();
+
+        if(checkEqualsByNodeInternalObject) baseNode = getInternalNodeThatMatches(baseNode.getInstance());
+        else baseNode = getInternalNodeThatMatches(baseNode);
+
+        if(baseNode == null) return null;
+
+        actualSearchQueue.add(baseNode); //add base node for the first iteration (level 0)
+        for (int i = 0; i <= hedgeChainLevel; i++) {
+            //Check if actual search has hedges, the first iteration (level 0) has 1 element, if no node at actual level search has hedges search it will exit the next iteration
+            if (!actualSearchQueue.isEmpty()) {
+                actualSearchQueue.forEach(x-> {
+                            x.getNeighbors().forEach(y -> {
+                                if (!(alreadyRevisedNodes.contains(y))) {
+                                    nextSearchQueue.add(y); //Check node for adding to queue
+                                    alreadyRevisedNodes.add(y); //add actual level node to the visited nodes list
+                                }
+                            });
+                    });
+                actualSearchQueue = new ArrayList<>(nextSearchQueue);
+                nextSearchQueue.clear();
+            } else return null;
+        }
+        return actualSearchQueue;
+    }
+
+   /* public Queue<NodeT<T>> searchForExclusiveNodesAtHedgeChainLevelBFS(NodeT<T> baseNode, int hedgeChainLevel) {
         Queue<NodeT<T>> actualSearchQueue = new LinkedList<>();
         Queue<NodeT<T>> nextSearchQueue = new LinkedList<>();
         ArrayList<NodeT<T>> alreadyRevisedNodes = new ArrayList<NodeT<T>>();
@@ -198,7 +227,7 @@ public class GraphT<T> {
             } else return null;
         }
         return actualSearchQueue;
-    }
+    }*/
 
     public ArrayList<NodeT<T>> getNodes() {
         return nodes;
