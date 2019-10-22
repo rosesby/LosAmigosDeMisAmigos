@@ -12,6 +12,7 @@ import javax.sound.midi.Soundbank;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -42,23 +43,21 @@ public class Main {
     public static void main(String[] args) throws IOException {
         graph = new GraphT<Person>();
 
-        int lineCounter = 1;
-
         FileReader fileReaderCatalog = new FileReader("src/data/inputCatalog");
         BufferedReader inCatalog = new BufferedReader(fileReaderCatalog);
 
         FileReader fileReaderQuestions = new FileReader("src/data/inputActions");
         BufferedReader inQuestions = new BufferedReader(fileReaderQuestions);
 
-        String inLinePersonDataStringPattern = "[{][\\s]*[A-z]+[[\\s]*[A-z]+]*[\\s]*,[\\s]*[A-z]+[[\\s]*[A-z]+]*[\\s]*,[\\s]*[MFU][\\s]*,[\\s]*[0-9]{2}[/][0-9]{2}[/][0-9]{4}[\\s]*[}]";
-        String inLinePersonDataStringPatternGrouped = "[{][\\s]*([A-z]+[[\\s]*[A-z]+]*)[\\s]*,[\\s]*([A-z]+[[\\s]*[A-z]+]*)[\\s]*,[\\s]*(M|F|U)[\\s]*,[\\s]*([0-9]{2}[/][0-9]{2}[/][0-9]{4})[\\s]*[}]";
-        String positionStringPattern = "[0-9]+";
+        String inLinePersonDataStringPattern = "[A-z]+[[\\s]*[A-z]+]*[\\s]*,[\\s]*[A-z]+[[\\s]*[A-z]+]*[\\s]*,[\\s]*[MFU][\\s]*,[\\s]*[0-9]{2}[/][0-9]{2}[/][0-9]{4}";
+        String inLinePersonDataStringPatternGrouped = "([A-z]+[[\\s]*[A-z]+]*)[\\s]*,[\\s]*([A-z]+[[\\s]*[A-z]+]*)[\\s]*,[\\s]*(M|F|U)[\\s]*,[\\s]*([0-9]{2}[/][0-9]{2}[/][0-9]{4})";
+        String positionStringPattern = "[\\d]+";
 
-        String commandAtCenter = "amigo|eliminar|amigos";
+        String commandAtCenter = "eliminar|amigos|amigo"; //el orden importa primero checar amigos y despues amigo, de lo contrario { amigos = (amigos + s) }
         String commandAtStart = "amigos";
 
-        String stringCommandPatternA = String.format("[\\s]*(%1$s|%2$s)[\\s]*(%3$s)[\\s]*(%1$s|%2$s)(.*)", inLinePersonDataStringPattern, positionStringPattern, commandAtCenter);
-        String stringCommandPatternB = String.format("[\\s]*(%1$s)[\\s]*(%2$s|%3$s)[\\s]*(%3$s)(.*)", commandAtStart, inLinePersonDataStringPattern, positionStringPattern);
+        String stringCommandPatternA = String.format("^[\\s]*(%1$s|%2$s)[\\s]*(%3$s)[\\s]*(%1$s|%2$s)(.*)", inLinePersonDataStringPattern, positionStringPattern, commandAtCenter);
+        String stringCommandPatternB = String.format("^[\\s]*(%1$s)[\\s]*(%2$s|%3$s)[\\s]*(%3$s)(.*)", commandAtStart, inLinePersonDataStringPattern, positionStringPattern);
 
         Pattern commandPatternA = Pattern.compile(stringCommandPatternA, Pattern.CASE_INSENSITIVE);
         Pattern commandPatternB = Pattern.compile(stringCommandPatternB, Pattern.CASE_INSENSITIVE);
@@ -68,6 +67,7 @@ public class Main {
         inLinePersonDataPattern = Pattern.compile(inLinePersonDataStringPatternGrouped);
 
         String lineCatalog;
+
         while ((lineCatalog = inCatalog.readLine()) != null) {
             String dataline = lineCatalog;
             Matcher m = inLinePersonDataPattern.matcher(dataline);
@@ -78,38 +78,49 @@ public class Main {
             }
         }
 
-        String line;
-        while ((line = inQuestions.readLine()) != null) {
-            String dataline = line;
+        PrintWriter writer = new PrintWriter("the-file-name.txt", "UTF-8");
+        int lineCounter = 1;
+        while (true) {
+            String dataLine = inQuestions.readLine();
+            if (dataLine != null) {
+                System.out.print(lineCounter + " : ");
 
-            Optional<Pattern> patternMatch = Arrays.stream(commandPatterns)
-                    .filter(pattern -> pattern.matcher(dataline).find())
-                    .findFirst();
+                if (dataLine.isBlank() || dataLine.isEmpty()) System.out.print("Linea en blanco");
+                else {
+                    Optional<Pattern> patternMatch = Arrays.stream(commandPatterns)
+                            .filter(pattern -> pattern.matcher(dataLine).find())
+                            .findFirst();
 
-            if (patternMatch.isPresent()) {
-                Pattern pattern = patternMatch.get();
-                Matcher m = pattern.matcher(dataline);
-                m.find();
+                    if (patternMatch.isPresent()) {
+                        Pattern pattern = patternMatch.get();
+                        Matcher m = pattern.matcher(dataLine);
+                        m.find();
 
-                if (pattern.toString().equals(stringCommandPatternA)) {
-                    String pa = m.group(1);
-                    String com = m.group(2);
-                    String pb = m.group(3);
+                        if (pattern.toString().equals(stringCommandPatternA)) {
+                            String pa = m.group(1);
+                            String com = m.group(2);
+                            String pb = m.group(3);
 
-                    Person personA = personPatternStringParser(pa);
-                    Person personB = personPatternStringParser(pb);
+                            Person personA = personPatternStringParser(pa);
+                            Person personB = personPatternStringParser(pb);
+                            processAction(personA, personB, com);
+                        } else if (pattern.toString().equals(stringCommandPatternB)) {
+                            String p = m.group(2);
+                            String l = m.group(3);
 
-                    processAction(personA, personB, com);
-                } else if (pattern.toString().equals(stringCommandPatternB)) {
-                    String p = m.group(2);
-                    String l = m.group(3);
-
-                    Person person = personPatternStringParser(p);
-
-                    processAction(person, l);
+                            Person person = personPatternStringParser(p);
+                            processAction(person, l);
+                        }
+                    } else {
+                        System.out.print("Linea con texto inválido");
+                        writer.println(dataLine);
+                    }
                 }
-            }
+            }else break;
+            System.out.println();
+            lineCounter++;
         }
+        writer.close();
         graph.getNodes().forEach(node -> System.out.println(node));
     }
 
@@ -118,7 +129,6 @@ public class Main {
         if (m.find()) {
             String firstName = m.group(1).trim().replaceAll("[\\s]+", " ");
             String lastName = m.group(2).trim().replaceAll("[\\s]+", " ");
-            ;
             Sex sex = Sex.valueOf(m.group(3).toUpperCase());
             LocalDate date = parseStringDate(m.group(4));
             return new Person(firstName, lastName, sex, date);
@@ -134,18 +144,25 @@ public class Main {
         switch (action) {
             case "amigo": {
                 boolean result = graph.setBiDirectionalHedge(NodeA, NodeB);
-                if (result) System.out.println("Se han hecho amigos " + personA + " & " + personB);
-            } break;
+                String message = (result) ? "Se han creado amistad entre" : "Se falló en crear amistad entre" ;
+                message += " " + personA + " & " + personB;
+                System.out.print(message);
+            }
+            break;
             case "eliminar": {
                 boolean result = graph.unSetBiDirectionalHedge(NodeA, NodeB);
-                if (result) System.out.println("Han terminado su amistad " + personA + " & " + personB);
-            } break;
+                String message = (result) ? "Se han terminado amistad entre" : "Se falló en terminar amistad entre" ;
+                message += " " + personA + " & " + personB;
+                System.out.print(message);
+            }
+            break;
             case "amigos": {
                 boolean result = graph.doesBidirectionalHedgeExists(NodeA, NodeB);
                 String message = "Se confirma que ";
                 message += (result) ? personA + " es amigo de " + personB : personA + " no es amigo de " + personB;
-                System.out.println(message);
-            } break;
+                System.out.print(message);
+            }
+            break;
         }
     }
 
@@ -155,9 +172,9 @@ public class Main {
         Queue<NodeT<Person>> queue = graph.searchForExclusiveNodesAtHedgeChainLevelBFS(node, searchLevel);
 
         ArrayList<NodeT<Person>> levelFriends;
-        if(queue == null ) levelFriends = new ArrayList<>();
+        if (queue == null) levelFriends = new ArrayList<>();
         else {
-            if(queue.isEmpty()) levelFriends = new ArrayList<>();
+            if (queue.isEmpty()) levelFriends = new ArrayList<>();
             else levelFriends = new ArrayList<>(queue);
         }
 
@@ -166,7 +183,7 @@ public class Main {
             levelFriendList += nodep.getInstance() + " ";
         }
 
-        System.out.println("Amigos Nivel " + searchLevel + " de " + person + " : " + levelFriendList);
+        System.out.print("Amigos Nivel " + searchLevel + " de " + person + " : " + levelFriendList);
     }
 
     private static void showMactherGroups(Matcher m) {
