@@ -5,8 +5,7 @@ import java.util.*;
 //todo implement equals, check internal or nested classes for architecture
 public class GraphT<T> {
     private ArrayList<NodeT<T>> nodes;
-    private Object NodeT;
-    boolean checkEqualsByNodeInternalObject = true;
+    private final boolean checkEqualsByNodeInternalObject = true;
 
     public GraphT() {
         nodes = new ArrayList<NodeT<T>>();
@@ -32,10 +31,9 @@ public class GraphT<T> {
         return (nodePair[0] != null && nodePair[1] != null);
     }
 
-    public NodeT<T>[] getInternalNodesInPairs(NodeT<T> nodeA, NodeT<T> nodeB) {
+    public dataStructure.NodeT[] getInternalNodesInPairs(NodeT<T> nodeA, NodeT<T> nodeB) {
         NodeT<T> nodeAInternal;
         NodeT<T> nodeBInternal;
-
         if (checkEqualsByNodeInternalObject) {
             nodeAInternal = getInternalNodeThatMatches(nodeA.getInstance());
             nodeBInternal = getInternalNodeThatMatches(nodeB.getInstance());
@@ -43,15 +41,13 @@ public class GraphT<T> {
             nodeAInternal = getInternalNodeThatMatches(nodeA);
             nodeBInternal = getInternalNodeThatMatches(nodeB);
         }
-        NodeT<T>[] nodePair = new NodeT[]{nodeAInternal, nodeBInternal};
-        return nodePair;
+        return new NodeT[]{nodeAInternal, nodeBInternal};
     }
 
     public boolean setUniDirectionalHedge(NodeT<T> nodeA, NodeT<T> nodeB) {
         NodeT<T>[] nodePair = getInternalNodesInPairs(nodeA, nodeB);
         if (isNodePairNull(nodePair)) {
-            boolean result = nodePair[0].addNeighbor(nodePair[1]);
-            return result;
+            return nodePair[0].addNeighbor(nodePair[1]);
         }
         return false;
     }
@@ -75,8 +71,7 @@ public class GraphT<T> {
     public boolean unSetUniDirectionalHedge(NodeT<T> nodeA, NodeT<T> nodeB) {
         NodeT<T>[] nodePair = getInternalNodesInPairs(nodeA, nodeB);
         if (isNodePairNull(nodePair)) {
-            boolean result = nodePair[0].removeNeighbor(nodePair[1]);
-            return result;
+            return nodePair[0].removeNeighbor(nodePair[1]);
         }
         return false;
     }
@@ -114,14 +109,12 @@ public class GraphT<T> {
 
     public NodeT<T> getInternalNodeThatMatches(T targetObject) {
         Optional<NodeT<T>> searchedNode = nodes.stream().filter(node -> node.getInstance().equals(targetObject)).findFirst();
-        if (searchedNode.isPresent()) return searchedNode.get();
-        else return null;
+        return searchedNode.orElse(null);
     }
 
     public NodeT<T> getInternalNodeThatMatches(NodeT<T> targetNode) {
         Optional<NodeT<T>> searchedNode = nodes.stream().filter(node -> node.equals(targetNode)).findFirst();
-        if (searchedNode.isPresent()) return searchedNode.get();
-        else return null;
+        return searchedNode.orElse(null);
     }
 
     public NodeT<T> getInternalNodeByPositionInCollection(int targetPositionNumber) {

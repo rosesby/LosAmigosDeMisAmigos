@@ -6,14 +6,14 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class Person {
-    private String firstName;
-    private String lastName;
-    private Sex sex;
-    private LocalDate birthDate;
+    private final String firstName;
+    private final String lastName;
+    private final Sex sex;
+    private final LocalDate birthDate;
 
     public Person(String firstName, String lastName, Sex sex, LocalDate birthDate) {
-        this.firstName = firstName.replaceAll("[\\s]+"," ");;
-        this.lastName = lastName.replaceAll("[\\s]+"," ");;
+        this.firstName = firstName.replaceAll("[\\s]+"," ");
+        this.lastName = lastName.replaceAll("[\\s]+"," ");
         this.sex = sex;
         this.birthDate = birthDate;
     }

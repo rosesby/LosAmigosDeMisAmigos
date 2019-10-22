@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class NodeT<T> {
-    private T instance;
+    private final T instance;
     private ArrayList<NodeT<T>> neighbors;
 
     public NodeT(T object) {
@@ -23,7 +23,7 @@ public class NodeT<T> {
      * @return
      */
     public boolean addNeighbor(NodeT<T> object){
-        boolean result = (neighbors.stream().anyMatch(node->node.equals(object)) || object.equals(this.instance))?  false : true;
+        boolean result = neighbors.stream().noneMatch(node -> node.equals(object)) && !object.equals(this.instance);
         if(result)neighbors.add(object);
         return result;
     }

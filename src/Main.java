@@ -10,6 +10,7 @@ import domain.model.Sex;
 
 import javax.sound.midi.Soundbank;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -27,7 +28,7 @@ import java.util.regex.Pattern;
  * separa los elementos de informacion de cada linea
  * crea objetos, relaciones y busquedas en base a la los elementos de la informacion
  */
-public class Main {
+class Main {
     private static GraphT<Person> graph;
     private static Pattern inLinePersonDataPattern;
 
@@ -46,7 +47,7 @@ public class Main {
         Pattern patternRegexFilename = Pattern.compile(regexFilename);
         Matcher matcherFileName;
 
-        String filename = "";
+        String filename;
         do {
             System.out.println("Ingrese el nombre del archivo de texto de salida");
             filename = bufferedReader.readLine();
@@ -61,7 +62,7 @@ public class Main {
         BufferedReader inQuestions = new BufferedReader(fileReaderQuestions);
 
         String inLinePersonDataStringPattern = "[A-z]+[[\\s]*[A-z]+]*[\\s]*,[\\s]*[A-z]+[[\\s]*[A-z]+]*[\\s]*,[\\s]*[MFU][\\s]*,[\\s]*[0-9]{2}[/][0-9]{2}[/][0-9]{4}";
-        String inLinePersonDataStringPatternGrouped = "([A-z]+[[\\s]*[A-z]+]*)[\\s]*,[\\s]*([A-z]+[[\\s]*[A-z]+]*)[\\s]*,[\\s]*(M|F|U)[\\s]*,[\\s]*([0-9]{2}[/][0-9]{2}[/][0-9]{4})";
+        String inLinePersonDataStringPatternGrouped = "([A-z]+[[\\s]*[A-z]+]*)[\\s]*,[\\s]*([A-z]+[[\\s]*[A-z]+]*)[\\s]*,[\\s]*([MFU])[\\s]*,[\\s]*([0-9]{2}[/][0-9]{2}[/][0-9]{4})";
         String positionStringPattern = "[\\d]+";
 
         String commandAtCenter = "eliminar|amigos|amigo"; //el orden importa primero checar amigos y despues amigo, de lo contrario { amigos = (amigos + s) }
@@ -80,16 +81,15 @@ public class Main {
         String lineCatalog;
 
         while ((lineCatalog = inCatalog.readLine()) != null) {
-            String dataline = lineCatalog;
-            Matcher m = inLinePersonDataPattern.matcher(dataline);
+            Matcher m = inLinePersonDataPattern.matcher(lineCatalog);
 
             if (m.find()) {
-                Person person = personPatternStringParser(dataline);
+                Person person = personPatternStringParser(lineCatalog);
                 graph.addNode(person);
             }
         }
 
-        PrintWriter writer = new PrintWriter(filename + ".txt", "UTF-8");
+        PrintWriter writer = new PrintWriter(filename + ".txt", StandardCharsets.UTF_8);
         int lineCounter = 1;
         while (true) {
             String dataLine = inQuestions.readLine();
@@ -189,9 +189,9 @@ public class Main {
             else levelFriends = new ArrayList<>(queue);
         }
 
-        String levelFriendList = " ";
+        StringBuilder levelFriendList = new StringBuilder(" ");
         for (NodeT<Person> nodep : levelFriends) {
-            levelFriendList += nodep.getInstance() + " ";
+            levelFriendList.append(nodep.getInstance()).append(" ");
         }
 
         System.out.print("Amigos Exclusivos de Nivel " + searchLevel + " de " + person + " : " + levelFriendList);
