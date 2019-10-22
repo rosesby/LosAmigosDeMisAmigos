@@ -1,0 +1,36 @@
+ Victor Manuel , Batiz , M , 12/03/1974  amigo  Saul Alonso , Palazuelos , M , 07/08/1995 
+ Daniel , Leyva , M , 20/02/1995  amigo  Luis Marcos, Plata , M , 31/10/1986 
+ Glenn Suasnavar, Della Rocca , M , 19/02/1994  amigo  Misael , Zazueta , M , 31/07/1995
+6 amigo  Eduardo , Huerta , M , 03/10/1995  
+9 amigo  Rafael , Imperial ,M , 04/10/1993  
+2 amigo  Eduardo , Huerta , M , 03/10/1995  
+ Oscar Eliut , Sandoval , M , 23/07/1994  amigo 1 
+ Saul Alonso , Palazuelos , M , 07/08/1995  amigo 11 
+ Misael , Zazueta , M , 31/07/1995  amigo 7 
+10 amigo 8 
+5 amigo 7 
+3 amigo 5
+9 amigo 5
+9 amigo 7
+
+ Victor Manuel  , Batiz , M , 12/03/1974  amigo 6 
+10 amigo  Rafael , Imperial ,M , 04/10/1993  
+
+
+1 amigos 6 
+6 amigos 9 
+ Oscar Eliut , Sandoval , M , 23/07/1994  amigos 7 
+ Glenn , Della Rocca , M , 19/02/1994  amigos 1 
+6 amigos  Luis Marcos , Plata , M , 31/10/1986  
+11 amigos  Rafael , Zavala , M , 24/10/1995
+
+ Daniel , Leyva , M , 20/02/1995  eliminar  Luis Marcos, Plata , M , 31/10/1986
+2 eliminar  Eduardo , Huerta , M , 03/10/1995  
+ Misael , Zazueta , M , 31/07/1995  amigo 7 
+
+amigos 7 1
+amigos 8 3
+amigos 1 3
+amigos  Daniel , Leyva , M , 20/02/1995  2
+amigos  Glenn , Della Rocca , M , 19/02/1994  4
+amigos  Saul Alonso , Palazuelos , M , 07/08/1995  2

@@ -173,12 +173,13 @@ public class GraphT<T> {
         if(baseNode == null) return null;
 
         actualSearchQueue.add(baseNode); //add base node for the first iteration (level 0)
-        for (int i = 0; i <= hedgeChainLevel; i++) {
+        alreadyRevisedNodes.add(baseNode);
+        for (int i = 0; i < hedgeChainLevel; i++) {
             //Check if actual search has hedges, the first iteration (level 0) has 1 element, if no node at actual level search has hedges search it will exit the next iteration
             if (!actualSearchQueue.isEmpty()) {
                 actualSearchQueue.forEach(x-> {
                             x.getNeighbors().forEach(y -> {
-                                if (!(alreadyRevisedNodes.contains(y))) {
+                                if (!(alreadyRevisedNodes.contains(y) || x.equals(y))) {
                                     nextSearchQueue.add(y); //Check node for adding to queue
                                     alreadyRevisedNodes.add(y); //add actual level node to the visited nodes list
                                 }

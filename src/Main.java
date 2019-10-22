@@ -8,7 +8,6 @@ import dataStructure.NodeT;
 import domain.model.Person;
 import domain.model.Sex;
 
-import javax.sound.midi.Soundbank;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -55,10 +54,17 @@ class Main {
         } while (!matcherFileName.find());
         filename = "out/" + filename;
 
-        FileReader fileReaderCatalog = new FileReader("src/data/inputCatalog");
+
+        FileReader fileReaderCatalog;
+        //fileReaderCatalog = new FileReader("src/data/TGlenn/db.txt");
+        fileReaderCatalog = new FileReader("src/data/TVictor/catalogo.txt");
+        //fileReaderCatalog = new FileReader("src/data/inputCatalog");
         BufferedReader inCatalog = new BufferedReader(fileReaderCatalog);
 
-        FileReader fileReaderQuestions = new FileReader("src/data/inputActions");
+        FileReader fileReaderQuestions;
+        //fileReaderQuestions = new FileReader("src/data/TGlenn/instructions.txt");
+        fileReaderQuestions = new FileReader("src/data/TVictor/relaciones.txt");
+        //fileReaderQuestions = new FileReader("src/data/inputActions");
         BufferedReader inQuestions = new BufferedReader(fileReaderQuestions);
 
         String inLinePersonDataStringPattern = "[A-z]+[[\\s]*[A-z]+]*[\\s]*,[\\s]*[A-z]+[[\\s]*[A-z]+]*[\\s]*,[\\s]*[MFU][\\s]*,[\\s]*[0-9]{2}[/][0-9]{2}[/][0-9]{4}";
@@ -169,9 +175,7 @@ class Main {
             break;
             case "amigos": {
                 boolean result = graph.doesBidirectionalHedgeExists(NodeA, NodeB);
-                String message = "Se confirma que ";
-                message += (result) ? personA + " es amigo de " + personB : personA + " no es amigo de " + personB;
-                System.out.print(message);
+                System.out.print(personA + " es amigo de " + personB + " : " + result);
             }
             break;
         }

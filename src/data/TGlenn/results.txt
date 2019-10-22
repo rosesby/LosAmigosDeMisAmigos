@@ -1,0 +1,9 @@
+{Victor Manuel, Batiz, M, 1974-03-12} es amigo de {Saul Alonso, Palazuelos, M, 1995-08-07} : Verdadero
+{Saul Alonso, Palazuelos, M, 1995-08-07} es amigo de {Eduardo, Huerta, M, 1995-10-03} : Verdadero
+{Oscar Eliut, Sandoval, M, 1994-07-23} es amigo de {Luis Marcos, Plata, M, 1986-10-31} : Verdadero
+{Glenn, Della Rocca, M, 1994-02-19} es amigo de {Victor Manuel, Batiz, M, 1974-03-12} : Falso
+{Saul Alonso, Palazuelos, M, 1995-08-07} es amigo de {Luis Marcos, Plata, M, 1986-10-31} : Falso
+{Manuel, Medrano, M, 1995-12-02} es amigo de {Rafael, Zavala, M, 1995-10-24} : Falso
+Amigos de {Luis Marcos, Plata, M, 1986-10-31} en el nivel 1 : { {Eduardo, Huerta, M, 1995-10-03}, {Misael, Zazueta, M, 1995-07-31}, {Oscar Eliut, Sandoval, M, 1994-07-23} }
+Amigos de {Rafael, Zavala, M, 1995-10-24} en el nivel 3 : { {Saul Alonso, Palazuelos, M, 1995-08-07}, {Luis Marcos, Plata, M, 1986-10-31}, {Oscar Eliut, Sandoval, M, 1994-07-23} }
+Amigos de {Victor Manuel, Batiz, M, 1974-03-12} en el nivel 3 : { {Rafael, Imperial, M, 1993-10-04}, {Misael, Zazueta, M, 1995-07-31} }
